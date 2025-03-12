@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/flame.dart';
 import 'package:klondike/components/foundation.dart';
 
+import 'components/card.dart';
 import 'components/pile.dart';
 import 'components/stock.dart';
 import 'components/waste.dart';
@@ -62,6 +65,20 @@ class KlondikeGame extends FlameGame {
     camera.viewfinder.visibleGameSize = Vector2(worldWidth, worldHeight);
     camera.viewfinder.position = Vector2(worldWidth / 2, 0);
     camera.viewfinder.anchor = Anchor.topCenter;
+
+    final random = Random();
+    for (var i = 0; i < 7; i++) {
+      for (var j = 0; j < 4; j++) {
+        final card =
+            Card(random.nextInt(13) + 1, random.nextInt(4))
+              ..position = Vector2(100 + i * 1150, 100 + j * 1500)
+              ..addToParent(world);
+        if (random.nextDouble() < 0.9) {
+          // flip face up with 90% probability
+          card.flip();
+        }
+      }
+    }
   }
 }
 
