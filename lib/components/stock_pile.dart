@@ -5,7 +5,8 @@ import 'package:flutter/material.dart' show Paint, PaintingStyle;
 
 import '../klondike_game.dart';
 import 'card.dart';
-import 'waste.dart';
+import 'pile.dart';
+import 'waste_pile.dart';
 
 final _borderPaint =
     Paint()
@@ -18,8 +19,11 @@ final _circlePaint =
       ..strokeWidth = 100
       ..color = const Color(0x883F5B5D);
 
-class StockPile extends PositionComponent with TapCallbacks {
+class StockPile extends PositionComponent with TapCallbacks implements Pile {
   StockPile({super.position}) : super(size: KlondikeGame.cardSize);
+
+  @override
+  bool canMoveCard(Card card) => false;
 
   /// Which cards are currently placed onto this pile. The first card in the
   /// list is at the bottom, the last card is on top.
@@ -30,6 +34,7 @@ class StockPile extends PositionComponent with TapCallbacks {
     card.position = position;
     card.priority = _cards.length;
     _cards.add(card);
+    card.pile = this;
   }
 
   @override

@@ -4,9 +4,13 @@ import 'package:flutter/material.dart' show Paint, PaintingStyle, Color;
 
 import '../klondike_game.dart';
 import 'card.dart';
+import 'pile.dart';
 
-class TableauPile extends PositionComponent {
+class TableauPile extends PositionComponent implements Pile {
   TableauPile({super.position}) : super(size: KlondikeGame.cardSize);
+
+  @override
+  bool canMoveCard(Card card) => _cards.isNotEmpty && card == _cards.last;
 
   final _borderPaint =
       Paint()
@@ -31,6 +35,7 @@ class TableauPile extends PositionComponent {
     }
     card.priority = _cards.length;
     _cards.add(card);
+    card.pile = this;
   }
 
   void flipTopCard() {

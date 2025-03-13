@@ -4,10 +4,10 @@ import 'package:flame/flame.dart';
 import 'package:flutter/material.dart' show RRect, Rect, Radius;
 
 import 'components/card.dart';
-import 'components/foundation.dart';
-import 'components/pile.dart';
-import 'components/stock.dart';
-import 'components/waste.dart';
+import 'components/foundation_pile.dart';
+import 'components/tableau_pile.dart';
+import 'components/stock_pile.dart';
+import 'components/waste_pile.dart';
 
 const spriteFile = 'klondike-sprites.png';
 

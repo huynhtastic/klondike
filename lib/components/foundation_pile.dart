@@ -4,12 +4,16 @@ import 'package:flutter/material.dart' show Paint, PaintingStyle, BlendMode;
 
 import '../klondike_game.dart';
 import 'card.dart';
+import 'pile.dart';
 import 'suit.dart';
 
-class FoundationPile extends PositionComponent {
+class FoundationPile extends PositionComponent implements Pile {
   FoundationPile(int intSuit, {super.position})
     : suit = Suit.fromInt(intSuit),
       super(size: KlondikeGame.cardSize);
+
+  @override
+  bool canMoveCard(Card card) => _cards.isNotEmpty && card == _cards.last;
 
   final Suit suit;
   final List<Card> _cards = [];
