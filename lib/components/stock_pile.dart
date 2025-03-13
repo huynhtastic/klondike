@@ -25,10 +25,24 @@ class StockPile extends PositionComponent with TapCallbacks implements Pile {
   @override
   bool canMoveCard(Card card) => false;
 
+  @override
+  bool canAcceptCard(Card card) => false; // Stock pile does not accept cards
+
+  @override
+  void removeCard(Card card) {
+    throw StateError('Stock pile does not remove cards');
+  }
+
+  @override
+  void returnCard(Card card) {
+    throw StateError('Stock pile does not return cards');
+  }
+
   /// Which cards are currently placed onto this pile. The first card in the
   /// list is at the bottom, the last card is on top.
   final List<Card> _cards = [];
 
+  @override
   void acquireCard(Card card) {
     assert(!card.isFaceUp);
     card.position = position;

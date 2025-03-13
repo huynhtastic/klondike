@@ -12,8 +12,25 @@ class WastePile extends PositionComponent implements Pile {
   @override
   bool canMoveCard(Card card) => _cards.isNotEmpty && card == _cards.last;
 
+  @override
+  bool canAcceptCard(Card card) => false; // Waste pile does not accept cards
+
+  @override
+  void removeCard(Card card) {
+    assert(canMoveCard(card));
+    _cards.removeLast();
+    _fanOutTopCards();
+  }
+
+  @override
+  void returnCard(Card card) {
+    card.priority = _cards.indexOf(card);
+    _fanOutTopCards();
+  }
+
   final List<Card> _cards = [];
 
+  @override
   void acquireCard(Card card) {
     assert(card.isFaceUp);
     card.position = position;
