@@ -10,6 +10,7 @@ import 'pile.dart';
 import 'rank.dart';
 import 'suit.dart';
 import '../klondike_game.dart';
+import 'tableau_pile.dart';
 
 class Card extends PositionComponent with DragCallbacks {
   final Rank rank;
@@ -20,6 +21,8 @@ class Card extends PositionComponent with DragCallbacks {
   bool get isFaceUp => _faceUp;
   bool get isFaceDown => !_faceUp;
   void flip() => _faceUp = !_faceUp;
+
+  final List<Card> attachedCards = [];
 
   Card(int rank, int suit)
     : rank = Rank.fromInt(rank),
@@ -212,6 +215,14 @@ class Card extends PositionComponent with DragCallbacks {
     if (pile?.canMoveCard(this) ?? false) {
       super.onDragStart(event);
       priority = 100;
+      if (pile is TableauPile) {
+        attachedCards.clear();
+        final extraCards = (pile! as TableauPile).cardsOnTop(this);
+        for (final card in extraCards) {
+          card.priority = attachedCards.length + 101;
+          attachedCards.add(card);
+        }
+      }
     }
   }
 
@@ -220,7 +231,14 @@ class Card extends PositionComponent with DragCallbacks {
     if (!isDragged) {
       return;
     }
-    position += event.localDelta;
+    final delta = event.localDelta;
+
+    void updateAttachedCardPosition(Card card) {
+      card.position.add(delta);
+    }
+
+    position.add(delta);
+    attachedCards.forEach(updateAttachedCardPosition);
   }
 
   @override
@@ -238,9 +256,25 @@ class Card extends PositionComponent with DragCallbacks {
       if (dropPiles.first.canAcceptCard(this)) {
         pile!.removeCard(this);
         dropPiles.first.acquireCard(this);
+        if (attachedCards.isNotEmpty) {
+          void moveCardToPile(Card card) {
+            dropPiles.first.acquireCard(card);
+          }
+
+          attachedCards.forEach(moveCardToPile);
+          attachedCards.clear();
+        }
         return;
       }
     }
     pile!.returnCard(this);
+    if (attachedCards.isNotEmpty) {
+      void returnAttachedCards(Card card) {
+        pile!.returnCard(card);
+      }
+
+      attachedCards.forEach(returnAttachedCards);
+      attachedCards.clear();
+    }
   }
 }
