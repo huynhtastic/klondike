@@ -38,7 +38,7 @@ class KlondikeGame extends FlameGame {
     final foundations = List.generate(
       4,
       (i) =>
-          FoundationPile()
+          FoundationPile(i)
             ..size = cardSize
             ..position = Vector2(
               (i + 3) * (cardWidth + cardGap) + cardGap,
@@ -87,9 +87,19 @@ class KlondikeGame extends FlameGame {
       for (var rank = 1; rank <= 13; rank++)
         for (var suit = 0; suit < 4; suit++) Card(rank, suit),
     ];
-    world.addAll(cards);
     cards.shuffle();
-    cards.forEach(stock.acquireCard);
+    world.addAll(cards);
+
+    int cardToDeal = cards.length - 1;
+    for (var i = 0; i < 7; i++) {
+      for (var j = i; j < 7; j++) {
+        piles[j].acquireCard(cards[cardToDeal--]);
+      }
+      piles[i].flipTopCard();
+    }
+    for (int n = 0; n <= cardToDeal; n++) {
+      stock.acquireCard(cards[n]);
+    }
   }
 }
 
